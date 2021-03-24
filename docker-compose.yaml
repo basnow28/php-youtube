@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx:
-    container_name: pw_local_env-nginx
+    container_name: yt_local_env-nginx
     image: nginx:1.19.6-alpine
     restart: unless-stopped
     ports:
@@ -14,7 +14,7 @@ services:
       - app
 
   app:
-    container_name: pw_local_env-php
+    container_name: yt_local_env-php
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,16 +27,18 @@ services:
       - db
 
   db:
-    container_name: pw_local_env-db
+    container_name: yt_local_env-db
     image: mysql:8.0
     restart: unless-stopped
     ports:
       - "3330:3306"
     env_file:
-      - .env
+      - .db.env
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
 
   admin:
-    container_name: pw_local_env-admin
+    container_name: yt_local_env-admin
     image: adminer
     restart: always
     ports:
