@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Youtube\Controller\CookieMonsterController;
+use Youtube\Controller\CreateUserController;
 use Youtube\Controller\FlashController;
 use Youtube\Controller\HomeController;
 use Youtube\Middleware\BeforeMiddleware;
@@ -17,3 +18,8 @@ $app->get( '/visits', VisitsController::class . ":showVisits")->setName('visits'
 $app->get('/cookies', CookieMonsterController::class . ":showAdvice")->setName('advice');
 
 $app->get('/flash', FlashController::class . ":addMessage")->setName('flash');
+
+$app->post(
+    '/users',
+    CreateUserController::class . ":apply"
+)->setName('create_user');
