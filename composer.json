@@ -1,5 +1,21 @@
 {
+    "name": "yt/barb",
+    "authors": [
+        {
+            "name": "Barbara",
+            "email": "basnow28@gmail.com"
+        }
+    ], 
     "require": {
-        "guzzlehttp/guzzle": "^7.0"
+        "slim/slim": "4.*",
+        "slim/psr7": "^1.3",
+        "php-di/slim-bridge": "^3.1",
+        "slim/twig-view": "^3.0",
+        "dflydev/fig-cookies": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Youtube\\": "src/"
+        }
     }
 }
