@@ -18,7 +18,7 @@ final class MysqlUserRepository implements UserService
         $this->database = $database;
     }
 
-    public function save(User $user): void
+    public function save(User $user): int
     {
         $query = <<<'QUERY'
         INSERT INTO users(email, password, created_at)
@@ -36,6 +36,13 @@ final class MysqlUserRepository implements UserService
         $statement->bindParam('created_at', $createdAt, PDO::PARAM_STR);
 
         $statement->execute();
+
+        $result = $statement->fetchAll(PDO::FETCH_OBJ);
+        foreach($result as $r){
+            echo $r;
+        }
+
+        return intval("16"); 
     }
 
     public function login(UserLogin $user): int

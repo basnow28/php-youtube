@@ -15,6 +15,7 @@ use Youtube\Repository\MysqlUserRepository;
 use Youtube\Repository\PDOSingleton;
 use Youtube\Controller\LoginUserController;
 use Youtube\Controller\YoutubeVideosController;
+use Youtube\Repository\MysqlSearchRepository;
 
 $container = new Container();
 
@@ -97,11 +98,15 @@ $container->set(
     }
 );
 
+$container->set(MysqlSearchRepository::class, function (ContainerInterface $container) {
+    return new MysqlSearchRepository($container->get('db'));
+});
+
 $container->set(
     YoutubeVideosController::class,
     function (Container $c) {
         //LAST LINE OF EXECUTION
-        $controller = new YoutubeVideosController($c->get("view"));
+        $controller = new YoutubeVideosController($c->get("view"), $c->get(MysqlSearchRepository::class));
         return $controller;
     }
 );

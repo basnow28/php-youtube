@@ -45,3 +45,8 @@ $app->get(
     '/search',
     YoutubeVideosController::class . ":showSearchForm"
 )->setName('search');
+
+$app->get(
+    '/search/videos',
+    YoutubeVideosController::class . ":searchForVideos"
+)->setName('search_videos');

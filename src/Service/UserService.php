@@ -8,6 +8,6 @@ use Youtube\Model\UserLogin;
 
 interface UserService
 {
-    public function save(User $user): void;
+    public function save(User $user): int;
     public function login(UserLogin $user): int;
 }

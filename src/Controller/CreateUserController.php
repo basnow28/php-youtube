@@ -56,7 +56,8 @@ final class CreateUserController
                 $created_at ?? ''
             );
 
-            $this->userService->save($user);
+            $id = $this->userService->save($user);
+            $_SESSION['user_id'] = $id;
         } catch (Exception $exception) {
             // You could render a .twig template here to show the error
             $response->getBody()
@@ -66,13 +67,8 @@ final class CreateUserController
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
-        return $this->twig->render(
-            $response,
-            'search.twig',
-            [
-                'formAction' => $routeParser->urlFor("search"),
-                'formMethod' => "GET"
-            ]
-        );
+        return $response
+        ->withHeader('Location', $routeParser->urlFor("search"))
+        ->withStatus(302);
     }
 }

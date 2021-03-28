@@ -3,10 +3,17 @@
 {% block title %}Simple form{% endblock %}
 
 {% block content %}
-    <form action="{{ formAction }}" method="{{ forsmMethod }}" accept-charset="utf-8">
+    <form action="{{ formAction }}" method="{{ formMethod }}" accept-charset="utf-8">
         <input type="text"
-               name="email"
-               value="{% if formData.searchKey %}{{ formData.searchKey }}{% endif %}">
+               name="videoTitle"
+               value="{% if formData.videoTitle %}{{ formData.videoTitle }}{% endif %}">
         <input type="submit" value="Search for videos">
     </form>
+    {% if videos is not empty %}
+        <ol>
+            {% for video in videos %}
+                <li>{{ video.title }} <a href={{video.url}}>{{ video.url }}</a></li>
+            {% endfor %}
+        </ol>
+    {% endif %}
 {% endblock %}
