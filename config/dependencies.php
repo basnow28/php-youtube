@@ -13,6 +13,8 @@ use Slim\Flash\Messages;
 use Youtube\Controller\FlashController;
 use Youtube\Repository\MysqlUserRepository;
 use Youtube\Repository\PDOSingleton;
+use Youtube\Controller\LoginUserController;
+use Youtube\Controller\YoutubeVideosController;
 
 $container = new Container();
 
@@ -81,7 +83,25 @@ $container->set(
     CreateUserController::class,
     function (Container $c) {
         //LAST LINE OF EXECUTION
-        $controller = new CreateUserController($c->get("view"), $c->get(UserRepository::class)); // Not SURE
+        $controller = new CreateUserController($c->get("view"), $c->get(UserRepository::class));
+        return $controller;
+    }
+);
+
+$container->set(
+    LoginUserController::class,
+    function (Container $c) {
+        //LAST LINE OF EXECUTION
+        $controller = new LoginUserController($c->get("view"), $c->get(UserRepository::class));
+        return $controller;
+    }
+);
+
+$container->set(
+    YoutubeVideosController::class,
+    function (Container $c) {
+        //LAST LINE OF EXECUTION
+        $controller = new YoutubeVideosController($c->get("view"));
         return $controller;
     }
 );

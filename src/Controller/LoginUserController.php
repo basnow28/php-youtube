@@ -5,7 +5,9 @@ namespace Youtube\Controller;
 
 use Exception;
 use Slim\Routing\RouteContext;
+use Youtube\Middleware\StartSessionMiddleware;
 use Youtube\Model\User;
+use Youtube\Model\UserLogin;
 use Youtube\Service\UserService;
 use Slim\Views\Twig;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -13,12 +15,12 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use DateTime;
 
-final class CreateUserController
+final class LoginUserController
 {
 
     private Twig $twig;
     private UserService $userService;
-    private const DATE_FORMAT = 'Y-m-d H:i:s';
+    private StartSessionMiddleware $startSessionMiddleware;
 
     public function __construct(Twig $twig, UserService $userService)
     {
@@ -26,53 +28,52 @@ final class CreateUserController
         $this->userService = $userService;
     }
 
-    public function showRegistrationForm(Request $request, Response $response): Response
+    public function showLoginForm(Request $request, Response $response): Response
     {
+
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
         return $this->twig->render(
             $response,
-            'register.twig',
+            'login.twig',
             [
-                'formAction' => $routeParser->urlFor("create_user"),
+                'formAction' => $routeParser->urlFor("login_form"),
                 'formMethod' => "POST"
             ]
         );
     }
-   
 
-    public function apply(Request $request, Response $response): Response
+
+    public function login(Request $request, Response $response): Response
     {
         try {
             $data = $request->getParsedBody();
 
             // TODO - Validate data before instantiating the user
-            $created_at = date_create_from_format('Y-m-d H:i:s', date('Y-m-d H:i:s'));
 
-
-            $user = new User(
+            $user = new UserLogin(
                 $data['email'] ?? '',
-                $data['password'] ?? '',
-                $created_at ?? ''
+                $data['password'] ?? ''
             );
 
-            $this->userService->save($user);
+            $id = $this->userService->login($user);
         } catch (Exception $exception) {
             // You could render a .twig template here to show the error
             $response->getBody()
-                ->write('Unexpected error: ' . $exception->getMessage());
+                ->write('The user doesnt exist in the database: ' . $exception->getMessage());
             return $response->withStatus(500);
         }
 
-        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        if($id > 0){
+            $_SESSION['user_id'] = $id;
 
-        return $this->twig->render(
-            $response,
-            'search.twig',
-            [
-                'formAction' => $routeParser->urlFor("search"),
-                'formMethod' => "GET"
-            ]
-        );
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
+            return $response
+                ->withHeader('Location', $routeParser->urlFor("search"))
+                ->withStatus(302);
+        }
+
+        return $response->withStatus(200);
     }
 }

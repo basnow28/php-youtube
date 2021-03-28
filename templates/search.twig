@@ -1,0 +1,12 @@
+{% extends 'base.twig' %}
+
+{% block title %}Simple form{% endblock %}
+
+{% block content %}
+    <form action="{{ formAction }}" method="{{ forsmMethod }}" accept-charset="utf-8">
+        <input type="text"
+               name="email"
+               value="{% if formData.searchKey %}{{ formData.searchKey }}{% endif %}">
+        <input type="submit" value="Search for videos">
+    </form>
+{% endblock %}
