@@ -6,6 +6,7 @@ namespace Youtube\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Flash\Messages;
+use Slim\Routing\RouteContext;
 use Slim\Views\Twig;
 
 final class HomeController
@@ -27,11 +28,19 @@ final class HomeController
 
         $notifications = $messages['notifications'] ?? [];
 
+        if($_SESSION['user_id'] == null) {
+            return $this->twig->render(
+                $response,
+                'home.twig'
+            );
+        }
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
         return $this->twig->render(
             $response,
-            'home.twig',
+            'search.twig',
             [
-                'notifications' => $notifications
+                'formAction' => $routeParser->urlFor("search_videos"),
+                'formMethod' => "GET"
             ]
         );
     }

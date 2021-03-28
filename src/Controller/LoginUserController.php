@@ -76,4 +76,15 @@ final class LoginUserController
 
         return $response->withStatus(200);
     }
+
+    public function logout(Request $request, Response $response) : Response
+    {
+        $_SESSION['user_id'] = null;
+
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+
+            return $response
+                ->withHeader('Location', $routeParser->urlFor("home"))
+                ->withStatus(302);
+    }
 }

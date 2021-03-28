@@ -13,7 +13,7 @@ use Youtube\Controller\YoutubeVideosController;
 
 $app->add(StartSessionMiddleware::class);
 
-$app->get('/', HomeController::class . ':apply')->setName('home') ->add(BeforeMiddleware::class);
+$app->get('/', HomeController::class . ':apply')->setName('home');
 
 $app->get( '/visits', VisitsController::class . ":showVisits")->setName('visits');
 
@@ -50,3 +50,8 @@ $app->get(
     '/search/videos',
     YoutubeVideosController::class . ":searchForVideos"
 )->setName('search_videos');
+
+$app->get(
+    '/logout',
+    LoginUserController::class . ":logout"
+)->setName('logout_user');

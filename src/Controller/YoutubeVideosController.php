@@ -34,14 +34,21 @@ final class YoutubeVideosController
     public function showSearchForm(Request $request, Response $response): Response
     {
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        if($_SESSION['user_id'] != null){
+            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
+            return $this->twig->render(
+                $response,
+                'search.twig',
+                [
+                    'formAction' => $routeParser->urlFor("search_videos"),
+                    'formMethod' => "GET"
+                ]
+            );
+        }
         return $this->twig->render(
             $response,
-            'search.twig',
-            [
-                'formAction' => $routeParser->urlFor("search_videos"),
-                'formMethod' => "GET"
-            ]
+            'home.twig'
         );
     }
 
