@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Youtube\Controller;
@@ -39,10 +40,11 @@ final class CreateUserController
             ]
         );
     }
-   
+
 
     public function apply(Request $request, Response $response): Response
     {
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
         try {
             $data = $request->getParsedBody();
 
@@ -57,6 +59,18 @@ final class CreateUserController
             );
 
             $id = $this->userService->save($user);
+            if ($id == -1) {
+                return $this->twig->render(
+                    $response,
+                    'register.twig',
+                    [
+                        'formAction' => $routeParser->urlFor("create_user"),
+                        'formMethod' => "POST",
+                        'errorMessage' => "The email is already in use"
+                    ]
+                );
+            }
+
             $_SESSION['user_id'] = $id;
         } catch (Exception $exception) {
             // You could render a .twig template here to show the error
@@ -65,10 +79,8 @@ final class CreateUserController
             return $response->withStatus(500);
         }
 
-        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-
         return $response
-        ->withHeader('Location', $routeParser->urlFor("search"))
-        ->withStatus(302);
+            ->withHeader('Location', $routeParser->urlFor("search"))
+            ->withStatus(302);
     }
 }

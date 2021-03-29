@@ -33,7 +33,7 @@ services:
     ports:
       - "3330:3306"
     env_file:
-      - .db.env
+      - .env
     volumes:
       - ./init:/docker-entrypoint-initdb.d
       - ./init:/php.ini

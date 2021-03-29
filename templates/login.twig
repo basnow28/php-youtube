@@ -10,10 +10,10 @@
         <input type="password"
                name="password"
                value="{% if formData.password %}{{ formData.password }}{% endif %}">
-        {% if formErrors.email %}
-            <p style="color: red;">{{ formErrors.email }}</p>
-        {% endif %}
         <input type="submit" value="Login">
+        {% if errorMessage %}
+            <p style="color: red;">{{ errorMessage }}</p>
+        {% endif %}
     </form>
     <a type="button" value="Register" href="/register">Register</a>
 {% endblock %}

@@ -57,29 +57,36 @@ final class LoginUserController
             );
 
             $id = $this->userService->login($user);
+            $_SESSION['user_id'] = $id;
+
         } catch (Exception $exception) {
             // You could render a .twig template here to show the error
             $response->getBody()
                 ->write('The user doesnt exist in the database: ' . $exception->getMessage());
             return $response->withStatus(500);
         }
+        $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
         if($id > 0){
-            $_SESSION['user_id'] = $id;
-
-            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-
             return $response
                 ->withHeader('Location', $routeParser->urlFor("search"))
                 ->withStatus(302);
+        }else{
+            return $this->twig->render(
+                $response,
+                'login.twig',
+                [
+                    'formAction' => $routeParser->urlFor("login_form"),
+                    'formMethod' => "POST",
+                    'errorMessage' => "The login or password are incorrect"
+                ]
+            );
         }
-
-        return $response->withStatus(200);
     }
 
     public function logout(Request $request, Response $response) : Response
     {
-        $_SESSION['user_id'] = null;
+        $_SESSION['user_id'] = -1;
 
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 

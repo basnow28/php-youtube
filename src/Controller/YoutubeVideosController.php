@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Youtube\Controller;
@@ -34,17 +35,19 @@ final class YoutubeVideosController
     public function showSearchForm(Request $request, Response $response): Response
     {
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
-        if($_SESSION['user_id'] != null){
-            $routeParser = RouteContext::fromRequest($request)->getRouteParser();
+        if (isset($_SESSION['user_id'])) {
+            if ($_SESSION['user_id'] != -1) {
+                $routeParser = RouteContext::fromRequest($request)->getRouteParser();
 
-            return $this->twig->render(
-                $response,
-                'search.twig',
-                [
-                    'formAction' => $routeParser->urlFor("search_videos"),
-                    'formMethod' => "GET"
-                ]
-            );
+                return $this->twig->render(
+                    $response,
+                    'search.twig',
+                    [
+                        'formAction' => $routeParser->urlFor("search_videos"),
+                        'formMethod' => "GET"
+                    ]
+                );
+            }
         }
         return $this->twig->render(
             $response,
@@ -72,16 +75,16 @@ final class YoutubeVideosController
 
         //Save search to the search table
         $created_at = date_create_from_format('Y-m-d H:i:s', date('Y-m-d H:i:s'));
-        $this -> mysqlSearchRepository->save(new Search($_SESSION['user_id'], $q, $created_at));
+        $this->mysqlSearchRepository->save(new Search($_SESSION['user_id'], $q, $created_at));
 
         $items_body = (string) $res->getBody();
-        $items_array = json_decode($items_body) -> items;
+        $items_array = json_decode($items_body)->items;
 
         $videos = array();
 
-        foreach($items_array as $item){;
+        foreach ($items_array as $item) {;
             $videoId = $item->id->videoId;
-            $videoTitle= $item->snippet->title;
+            $videoTitle = $item->snippet->title;
             $videoUrl = "https://www.youtube.com/watch?v=" . $videoId;
 
             array_push($videos, array("title" => $videoTitle, "url" => $videoUrl));
@@ -99,7 +102,7 @@ final class YoutubeVideosController
         );
     }
 
-    private function saveSearchToTheTable(string $title):void{
-
+    private function saveSearchToTheTable(string $title): void
+    {
     }
 }

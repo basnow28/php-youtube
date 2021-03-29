@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Youtube\Controller;
@@ -21,18 +22,18 @@ final class HomeController
         $this->twig = $twig;
         $this->flash = $flash;
     }
-    
+
     public function apply(Request $request, Response $response)
     {
         $messages = $this->flash->getMessages();
 
-        $notifications = $messages['notifications'] ?? [];
-
-        if($_SESSION['user_id'] == null) {
-            return $this->twig->render(
-                $response,
-                'home.twig'
-            );
+        if (isset($_SESSION['user_id'])) {
+            if ($_SESSION['user_id'] == -1) {
+                return $this->twig->render(
+                    $response,
+                    'home.twig'
+                );
+            }
         }
         $routeParser = RouteContext::fromRequest($request)->getRouteParser();
         return $this->twig->render(
